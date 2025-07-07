@@ -1,0 +1,6 @@
+@FizzbuzzAPI_HostAddress = http://localhost:5274
+
+GET {{FizzbuzzAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

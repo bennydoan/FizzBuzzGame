@@ -10,7 +10,6 @@ namespace FizzbuzzAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // [Authorize] - Temporarily removed for testing
     public class GameCreateController : ControllerBase
     {
         private readonly FizzBuzzDBContext _context;
@@ -132,6 +131,7 @@ namespace FizzbuzzAPI.Controllers
 
         // GET: api/GameCreate/my-games
         [HttpGet("my-games")]
+        [Authorize]
         public async Task<IActionResult> GetMyGames()
         {
             try
@@ -174,6 +174,7 @@ namespace FizzbuzzAPI.Controllers
         }
 
         [HttpPost("Create")]
+        [Authorize]
         public async Task<IActionResult> CreateGame([FromBody] CreateGameDto gameDto)
         {
             if (!ModelState.IsValid)
@@ -182,17 +183,22 @@ namespace FizzbuzzAPI.Controllers
             }
             try
             {
+                // Get the current user's username from the JWT token
+                var username = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+                if (string.IsNullOrEmpty(username))
+                {
+                    return BadRequest(new { message = "User not authenticated properly" });
+                }
 
                 var game = new Game
                 {
                     GameName = gameDto.GameName,
-                    Author = gameDto.Author,
+                    Author = username, // Always set to current user
                     TimeDuration = gameDto.TimeDuration,
                     Start = gameDto.Start,
                     End = gameDto.End,
                     Divisor = gameDto.Divisor,
                     Replacement = gameDto.Replacement,
-
                 };
 
                 _context.Games.Add(game);
@@ -216,10 +222,90 @@ namespace FizzbuzzAPI.Controllers
                     game = response
                 });
             }
-
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "An error occurred while creating the game", error = ex.Message });
+            }
+        }
+
+        [HttpDelete("Delete/{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteGame(int id)
+        {
+            var game = await _context.Games.FindAsync(id);
+            if (game == null)
+            {
+                return NotFound(new { message = "Game not found" });
+            }
+
+            // Get the current user's username from the JWT token
+            var username = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+            if (string.IsNullOrEmpty(username) || game.Author != username)
+            {
+                return Forbid(); // 403 Forbidden
+            }
+
+            _context.Games.Remove(game);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Game deleted successfully", gameId = id });
+        }
+
+        [HttpPut("Update/{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateGame(int id, [FromBody] CreateGameDto gameDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var game = await _context.Games.FindAsync(id);
+                if (game == null)
+                {
+                    return NotFound(new { message = "Game not found" });
+                }
+
+                // Get the current user's username from the JWT token
+                var username = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+                if (string.IsNullOrEmpty(username) || game.Author != username)
+                {
+                    return Forbid(); // 403 Forbidden
+                }
+
+                // Update properties (author remains unchanged)
+                game.GameName = gameDto.GameName;
+                game.TimeDuration = gameDto.TimeDuration;
+                game.Start = gameDto.Start;
+                game.End = gameDto.End;
+                game.Divisor = gameDto.Divisor;
+                game.Replacement = gameDto.Replacement;
+
+                await _context.SaveChangesAsync();
+
+                var response = new GameResponseDto
+                {
+                    Id = game.Id,
+                    GameName = game.GameName,
+                    Author = game.Author,
+                    TimeDuration = game.TimeDuration,
+                    Start = game.Start,
+                    End = game.End,
+                    Divisor = game.Divisor,
+                    Replacement = game.Replacement,
+                    CreatedAt = game.CreatedAt
+                };
+
+                return Ok(new
+                {
+                    message = "Game updated successfully",
+                    game = response
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while updating the game", error = ex.Message });
             }
         }
     }

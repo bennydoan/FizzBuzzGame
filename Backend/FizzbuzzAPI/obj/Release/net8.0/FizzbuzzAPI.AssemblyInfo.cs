@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FizzbuzzAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+02b93c5ef3384ce6e3b0ea44e41f66cfff3a9e77")]
 [assembly: System.Reflection.AssemblyProductAttribute("FizzbuzzAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FizzbuzzAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

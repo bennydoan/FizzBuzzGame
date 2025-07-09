@@ -150,3 +150,4 @@ C:\Users\benny\OneDrive\Desktop\FizzBuzzGame2\Backend\FizzbuzzAPI\obj\Debug\net8
 C:\Users\benny\OneDrive\Desktop\FizzBuzzGame2\Backend\FizzbuzzAPI\obj\Debug\net8.0\FizzbuzzAPI.genruntimeconfig.cache
 C:\Users\benny\OneDrive\Desktop\FizzBuzzGame2\Backend\FizzbuzzAPI\obj\Debug\net8.0\ref\FizzbuzzAPI.dll
 C:\Users\benny\OneDrive\Desktop\FizzBuzzGame2\Backend\FizzbuzzAPI\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\benny\OneDrive\Desktop\FizzBuzzGame2\Backend\FizzbuzzAPI\obj\Debug\net8.0\FizzbuzzAPI.sourcelink.json

@@ -111,12 +111,49 @@
   },
   {
     "ContainingType": "FizzbuzzAPI.Controllers.GameCreateController",
+    "Method": "DeleteGame",
+    "RelativePath": "api/GameCreate/Delete/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FizzbuzzAPI.Controllers.GameCreateController",
     "Method": "GetMyGames",
     "RelativePath": "api/GameCreate/my-games",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FizzbuzzAPI.Controllers.GameCreateController",
+    "Method": "UpdateGame",
+    "RelativePath": "api/GameCreate/Update/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "gameDto",
+        "Type": "FizzbuzzAPI.Models.Game.CreateGameDto",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

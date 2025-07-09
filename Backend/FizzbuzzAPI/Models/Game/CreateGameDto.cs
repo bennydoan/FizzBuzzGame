@@ -8,8 +8,6 @@ namespace FizzbuzzAPI.Models.Game
         [StringLength(100)]
         public string GameName { get; set; } = string.Empty;
 
-        public string Author { get; set; } = string.Empty;
-
         [Required(ErrorMessage = "Time duration cannot be null")]
         public int TimeDuration { get; set; }
 

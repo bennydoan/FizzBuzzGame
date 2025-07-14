@@ -17,6 +17,12 @@ namespace FizzbuzzAPI.Models.Game
         [Required(ErrorMessage = "End number cannot be null")]
         public int End { get; set; }
 
+        [Required(ErrorMessage = "At least one rule is required")]
+        public List<GameRuleDto> Rules { get; set; } = new List<GameRuleDto>();
+    }
+
+    public class GameRuleDto
+    {
         [Required(ErrorMessage = "Divisor cannot be null")]
         public int Divisor { get; set; }
 

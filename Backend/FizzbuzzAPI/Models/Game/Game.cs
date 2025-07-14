@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FizzbuzzAPI.Models.Auth
+namespace FizzbuzzAPI.Models.Game
 {
     public class Game
     {
@@ -22,12 +22,9 @@ namespace FizzbuzzAPI.Models.Auth
         [Required(ErrorMessage = "End number cannot be null")]
         public int End { get; set; }
         
-        [Required(ErrorMessage = "Divisor cannot be null")]
-        public int Divisor { get; set; }
-        
-        [Required(ErrorMessage = "Replacement cannot be null")]
-        public string Replacement { get; set; } = string.Empty;
-        
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        
+        // Navigation property for multiple rules
+        public ICollection<GameRule> Rules { get; set; } = new List<GameRule>();
     }
 } 

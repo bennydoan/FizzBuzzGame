@@ -1,5 +1,4 @@
 ﻿using FizzbuzzAPI.Data;
-using FizzbuzzAPI.Models.Auth;
 using FizzbuzzAPI.Models.Game;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -26,6 +25,7 @@ namespace FizzbuzzAPI.Controllers
             try
             {
                 var games = await _context.Games
+                    .Include(g => g.Rules)
                     .OrderByDescending(g => g.CreatedAt)
                     .Select(g => new GameResponseDto
                     {
@@ -35,8 +35,11 @@ namespace FizzbuzzAPI.Controllers
                         TimeDuration = g.TimeDuration,
                         Start = g.Start,
                         End = g.End,
-                        Divisor = g.Divisor,
-                        Replacement = g.Replacement,
+                        Rules = g.Rules.Select(r => new GameRuleDto
+                        {
+                            Divisor = r.Divisor,
+                            Replacement = r.Replacement
+                        }).ToList(),
                         CreatedAt = g.CreatedAt
                     })
                     .ToListAsync();
@@ -60,7 +63,9 @@ namespace FizzbuzzAPI.Controllers
         {
             try
             {
-                var game = await _context.Games.FindAsync(id);
+                var game = await _context.Games
+                    .Include(g => g.Rules)
+                    .FirstOrDefaultAsync(g => g.Id == id);
 
                 if (game == null)
                 {
@@ -75,8 +80,11 @@ namespace FizzbuzzAPI.Controllers
                     TimeDuration = game.TimeDuration,
                     Start = game.Start,
                     End = game.End,
-                    Divisor = game.Divisor,
-                    Replacement = game.Replacement,
+                    Rules = game.Rules.Select(r => new GameRuleDto
+                    {
+                        Divisor = r.Divisor,
+                        Replacement = r.Replacement
+                    }).ToList(),
                     CreatedAt = game.CreatedAt
                 };
 
@@ -99,6 +107,7 @@ namespace FizzbuzzAPI.Controllers
             try
             {
                 var games = await _context.Games
+                    .Include(g => g.Rules)
                     .Where(g => g.Author == authorName)
                     .OrderByDescending(g => g.CreatedAt)
                     .Select(g => new GameResponseDto
@@ -109,8 +118,11 @@ namespace FizzbuzzAPI.Controllers
                         TimeDuration = g.TimeDuration,
                         Start = g.Start,
                         End = g.End,
-                        Divisor = g.Divisor,
-                        Replacement = g.Replacement,
+                        Rules = g.Rules.Select(r => new GameRuleDto
+                        {
+                            Divisor = r.Divisor,
+                            Replacement = r.Replacement
+                        }).ToList(),
                         CreatedAt = g.CreatedAt
                     })
                     .ToListAsync();
@@ -144,6 +156,7 @@ namespace FizzbuzzAPI.Controllers
                 }
 
                 var games = await _context.Games
+                    .Include(g => g.Rules)
                     .Where(g => g.Author == username)
                     .OrderByDescending(g => g.CreatedAt)
                     .Select(g => new GameResponseDto
@@ -154,8 +167,11 @@ namespace FizzbuzzAPI.Controllers
                         TimeDuration = g.TimeDuration,
                         Start = g.Start,
                         End = g.End,
-                        Divisor = g.Divisor,
-                        Replacement = g.Replacement,
+                        Rules = g.Rules.Select(r => new GameRuleDto
+                        {
+                            Divisor = r.Divisor,
+                            Replacement = r.Replacement
+                        }).ToList(),
                         CreatedAt = g.CreatedAt
                     })
                     .ToListAsync();
@@ -197,9 +213,17 @@ namespace FizzbuzzAPI.Controllers
                     TimeDuration = gameDto.TimeDuration,
                     Start = gameDto.Start,
                     End = gameDto.End,
-                    Divisor = gameDto.Divisor,
-                    Replacement = gameDto.Replacement,
                 };
+
+                // Add rules to the game
+                foreach (var ruleDto in gameDto.Rules)
+                {
+                    game.Rules.Add(new GameRule
+                    {
+                        Divisor = ruleDto.Divisor,
+                        Replacement = ruleDto.Replacement
+                    });
+                }
 
                 _context.Games.Add(game);
                 await _context.SaveChangesAsync();
@@ -212,8 +236,11 @@ namespace FizzbuzzAPI.Controllers
                     TimeDuration = game.TimeDuration,
                     Start = game.Start,
                     End = game.End,
-                    Divisor = game.Divisor,
-                    Replacement = game.Replacement,
+                    Rules = game.Rules.Select(r => new GameRuleDto
+                    {
+                        Divisor = r.Divisor,
+                        Replacement = r.Replacement
+                    }).ToList(),
                     CreatedAt = DateTime.UtcNow
                 };
                 return Ok(new
@@ -261,7 +288,10 @@ namespace FizzbuzzAPI.Controllers
             }
             try
             {
-                var game = await _context.Games.FindAsync(id);
+                var game = await _context.Games
+                    .Include(g => g.Rules)
+                    .FirstOrDefaultAsync(g => g.Id == id);
+                    
                 if (game == null)
                 {
                     return NotFound(new { message = "Game not found" });
@@ -279,8 +309,19 @@ namespace FizzbuzzAPI.Controllers
                 game.TimeDuration = gameDto.TimeDuration;
                 game.Start = gameDto.Start;
                 game.End = gameDto.End;
-                game.Divisor = gameDto.Divisor;
-                game.Replacement = gameDto.Replacement;
+
+                // Remove existing rules
+                _context.GameRules.RemoveRange(game.Rules);
+
+                // Add new rules
+                foreach (var ruleDto in gameDto.Rules)
+                {
+                    game.Rules.Add(new GameRule
+                    {
+                        Divisor = ruleDto.Divisor,
+                        Replacement = ruleDto.Replacement
+                    });
+                }
 
                 await _context.SaveChangesAsync();
 
@@ -292,8 +333,11 @@ namespace FizzbuzzAPI.Controllers
                     TimeDuration = game.TimeDuration,
                     Start = game.Start,
                     End = game.End,
-                    Divisor = game.Divisor,
-                    Replacement = game.Replacement,
+                    Rules = game.Rules.Select(r => new GameRuleDto
+                    {
+                        Divisor = r.Divisor,
+                        Replacement = r.Replacement
+                    }).ToList(),
                     CreatedAt = game.CreatedAt
                 };
 

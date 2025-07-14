@@ -331,10 +331,9 @@
       },
       "CreateGameDto": {
         "required": [
-          "divisor",
           "end",
           "gameName",
-          "replacement",
+          "rules",
           "start",
           "timeDuration"
         ],
@@ -344,10 +343,6 @@
             "maxLength": 100,
             "minLength": 0,
             "type": "string"
-          },
-          "author": {
-            "type": "string",
-            "nullable": true
           },
           "timeDuration": {
             "type": "integer",
@@ -361,6 +356,22 @@
             "type": "integer",
             "format": "int32"
           },
+          "rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameRuleDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GameRuleDto": {
+        "required": [
+          "divisor",
+          "replacement"
+        ],
+        "type": "object",
+        "properties": {
           "divisor": {
             "type": "integer",
             "format": "int32"

@@ -10,8 +10,7 @@ namespace FizzbuzzAPI.Models.Game
         public int TimeDuration { get; set; }
         public int Start { get; set; }
         public int End { get; set; }
-        public int Divisor { get; set; }
-        public string Replacement { get; set; } = string.Empty;
+        public List<GameRuleDto> Rules { get; set; } = new List<GameRuleDto>();
         public DateTime CreatedAt { get; set; }
     }
 }
